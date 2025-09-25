@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CatView : MonoBehaviour
@@ -5,7 +6,16 @@ public class CatView : MonoBehaviour
     private CatPresenter _presenter;
     private Rigidbody _rb;
 
-    private void Awake() => _rb = GetComponent<Rigidbody>();
+
+    public event Action OnUIcreated;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+
+        OnUIcreated?.Invoke();
+    }
+
     public void SetPresenter(CatPresenter presenter) => _presenter = presenter;
 
     private void OnCollisionEnter(Collision collision)

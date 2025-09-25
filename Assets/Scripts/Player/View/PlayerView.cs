@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerView : MonoBehaviour
@@ -8,11 +9,9 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private Transform holdPoint;
     private Rigidbody _held;
 
-    private void Awake()
-    {
-        Anim = GetComponent<Animator>();
-        Controller = GetComponent<CharacterController>();
-    }
+    public event Action OnPlayerInScene;
+
+
 
     public void SetPresenter(PlayerPresenter presenter) { /* по желанию */ }
 
@@ -24,6 +23,11 @@ public class PlayerView : MonoBehaviour
 
     public bool IsHolding => _held != null;
     public float GetHeldWeight() => _held ? _held.mass : 0f;
+
+    public void Awake()
+    {
+        OnPlayerInScene?.Invoke();
+    }
 
     public void TryGrab(Rigidbody target)
     {

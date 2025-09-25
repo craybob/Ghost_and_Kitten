@@ -8,6 +8,8 @@ public class LevelView : MonoBehaviour
 
     [HideInInspector] public GameManager gameManager;
 
+    
+
     public void RenderLevel(float trackLength, int obstacleCount)
     {
         // Создаём дорожку
@@ -21,7 +23,8 @@ public class LevelView : MonoBehaviour
             {
                 GameObject safeZone = Instantiate(SafeZonePrefab);
                 safeZone.transform.SetParent(track.transform);
-                safeZone.transform.position = new Vector3(0,-3, trackLength);
+                safeZone.transform.position = new Vector3(0, -5, trackLength/2);
+                
 
 
                 gameManager.GetSafeZone(safeZone.GetComponent<SafeZone>());

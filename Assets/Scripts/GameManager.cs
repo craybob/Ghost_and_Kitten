@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,19 @@ public class GameManager : MonoBehaviour
     private LevelModel _levelModel;
     [SerializeField] private LevelView _levelView;
 
+    public static GameManager Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // не дублируем
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject); // сохраняем объект при смене сцены
+    }
+
     private void Start()
     {
         //Level Generate
@@ -24,7 +38,11 @@ public class GameManager : MonoBehaviour
         //for safeZone in Lvl generate
         _levelView.gameManager = this;
 
-        _levelPresenter.StartGame();
+        if(_levelModel.CurrentLevel == 1)
+        {
+            _levelPresenter.StartGame();
+        }
+        
 
         // Cat
         var catModel = new CatModel();
@@ -61,6 +79,24 @@ public class GameManager : MonoBehaviour
         this.safeZone = safeZone;
     }
 
-    private void WinGame() { Debug.Log("Победа!"); _levelPresenter.NextLevel(); }
+    private void WinGame() 
+    { 
+        Debug.Log("Победа!");
+        Debug.Log($"current LVL {_levelModel.CurrentLevel}");
+        startNewLevel();
+    }
+
+    private void startNewLevel()
+    {
+        
+        SceneAdmin sceneMan = new SceneAdmin();
+        if (_levelModel.CurrentLevel != 1)
+        {
+            _levelPresenter.NextLevel();
+        }
+        sceneMan.loadNewLevel();
+        
+    }
+
     private void LoseGame() { Debug.Log("Поражение!"); }
 }
